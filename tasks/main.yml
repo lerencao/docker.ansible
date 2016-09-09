@@ -1,6 +1,37 @@
 ---
 # tasks file for docker
 
-- include: install.ubuntu.yml
-  when: ansible_distribution == "Ubuntu"
+- name: Check if docker is already installed.
+  shell: which dockerd
+  register: docker_exists
 
+# TODO: assert os version.
+
+- include: install.ubuntu.yml
+  when: ansible_distribution == "Ubuntu" and docker_exists.rc != 0
+
+### configuration on docker net config.
+
+- name: Ensure docker started and will start on boot
+  service:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Set local vars for configuration
+  set_fact:
+    docker_config_net_file: "/etc/default/docker"
+
+- name: verify docker config file exists
+  file:
+    path: "{{ docker_config_net_file }}"
+    state: touch
+  changed_when: false
+
+- name: Turn down docker logging
+  lineinfile:
+    dest: "{{ docker_config_net_file }}"
+    regexp: ^OPTIONS=
+    line: OPTIONS="--selinux-enabled --log-level=warn"
+  notify:
+    - restart docker

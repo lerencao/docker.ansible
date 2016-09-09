@@ -1,6 +1,0 @@
----
-# vars file for docker
-
-# add no proxy to docker config file.
-# such as: export no_proxy= {{ no_proxy }}
-no_proxy: "localhost,127.0.0.0/8,::1,/var/run/docker.sock"
