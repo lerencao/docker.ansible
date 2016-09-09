@@ -4,6 +4,7 @@
 - name: Check if docker is already installed.
   shell: which dockerd
   register: docker_exists
+  ignore_errors: true
 
 # TODO: assert os version.
 
