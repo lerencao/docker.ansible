@@ -34,3 +34,7 @@
   items:
     - "linux-image-extra-{{ ansible_kernel }}"
     - linux-image-extra-virtual
+- name: Ensure docker installed
+  package:
+    name: docker-engine
+    state: present
